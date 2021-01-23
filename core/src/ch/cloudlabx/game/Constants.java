@@ -9,5 +9,15 @@ public class Constants{
     public static String TEXTURE_RAINDROP = "drop";
     public static String TEXTURE_BUCKET = "bucket";
 
+    public static float PHYSIC_BUCKET_MAX_ACCELERATION = 1f;
+    public static float PHYSIC_BUCKET_MAX_VELOCITY = 15f;
+    public static float PHYSIC_BUCKET_MASS = 1f;
 
+    public static float PHYSIC_RAINDROP_MAX_ACCELERATION = 1f;
+    public static float PHYSIC_RAINDROP_MAX_VELOCITY = 15f;
+    public static float PHYSIC_RAINDROP_MASS = 1f;
+
+    public static float PHYSIC_DEFAULT_MAX_ACCELERATION = 1f;
+    public static float PHYSIC_DEFAULT_MAX_VELOCITY = 1f;
+    public static float PHYSIC_DEFAULT_MASS = 1f;
 }

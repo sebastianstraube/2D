@@ -33,8 +33,9 @@ public abstract class ActorBase extends Actor {
 
     private ActorBase(){
         shapeRenderer = new ShapeRenderer();
-        this.maxAcc = 0.1f;
-        this.maxVel = 10f;
+        this.maxAcc = Constants.PHYSIC_DEFAULT_MAX_ACCELERATION;
+        this.maxVel = Constants.PHYSIC_DEFAULT_MAX_VELOCITY;
+        this.mass = Constants.PHYSIC_DEFAULT_MASS;
     }
 
     public ActorBase(float width, float height, float mass){

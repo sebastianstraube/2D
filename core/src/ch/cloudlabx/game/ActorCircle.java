@@ -7,38 +7,26 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
-public class ActorBall extends ActorBase {
+public class ActorCircle extends ActorBase {
 
     Color color = Color.MAGENTA;
 
-    public ActorBall(float radius) {
+    public ActorCircle(float radius) {
         super(radius);
-        this.maxAcc = 1f;
-        this.maxVel = 15f;
         this.center.x = radius;
         this.center.y = radius;
     }
 
-    public ActorBall(float posx, float posy, float radius) {
+    public ActorCircle(float posx, float posy, float radius) {
         this(radius);
         pos.x = posx;
         pos.y = posy;
     }
 
-    public void influenceRainCollision(){
-        //influence behaviour
-        if(maxVel > 0 || maxAcc > 0) {
-            maxVel -= (0.001);
-            maxVel -= (0.001);
-            mass += (0.001);
-        }
-    }
-
-    public void draw(Batch batch, float parentAlpha, Vector2 mousePosition) {
-        pos.x = mousePosition.x;
-        pos.y = mousePosition.y;
+    public void draw(Batch batch, float parentAlpha, Vector2 centerPosition) {
+        pos.x = centerPosition.x;
+        pos.y = centerPosition.y;
         this.draw(batch, parentAlpha);
-
     }
 
     @Override

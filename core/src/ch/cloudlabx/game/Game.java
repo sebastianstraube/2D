@@ -17,14 +17,13 @@ import com.badlogic.gdx.audio.Sound;
 
 public class Game extends ApplicationAdapter {
 	
-	
 	//assets
 	public static Sound dropSound;
 	public static Music rainMusic;
 
 	private Batch batch;
 	private ActorBucket bucket;
-	private ActorBall circle;
+	private ActorCircle circle;
 	private Vector3 mouse_position;
 	//private GameStage gameStage;
 	private OrthographicCamera cam;
@@ -59,7 +58,7 @@ public class Game extends ApplicationAdapter {
 		bucket = new ActorBucket(64,64);
 
 		//ball actor
-		circle = new ActorBall(64);
+		circle = new ActorCircle(64);
 
 		//cam
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

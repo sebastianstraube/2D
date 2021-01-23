@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ActorBucket extends ActorBase {
     
     public int fillRate;
-    public int rainDropsNr=0;
+    public int rainDropsNr;
     private Texture texture;
 
     public ActorBucket(float width, float height){
@@ -17,10 +17,9 @@ public class ActorBucket extends ActorBase {
         
         this.center.x = width / 2;
         this.center.y = height / 2;
-        this.maxAcc = 1f;
-        this.maxVel = 15f;
-        this.fillRate = 0;
-        this.mass = 1f;
+        this.maxAcc = Constants.PHYSIC_BUCKET_MAX_ACCELERATION;
+        this.maxVel = Constants.PHYSIC_BUCKET_MAX_VELOCITY;
+        this.mass = Constants.PHYSIC_BUCKET_MASS;
     }
 
     public ActorBucket(float posx, float posy, float width, float height) {
@@ -33,12 +32,11 @@ public class ActorBucket extends ActorBase {
         this(x, y, sideLength, sideLength);
     }
 
+    //influence behaviour
     public void influenceRainCollision(float mass){
-        //influence behaviour
         if(this.maxVel > 0.001) this.maxVel -= mass*0.01f;
         if(this.maxAcc > 0.001) this.maxAcc -= mass*0.01f;
         this.mass += mass*0.01f;
-        
         //System.out.println(maxVel);
     }
 
