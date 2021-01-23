@@ -108,7 +108,7 @@ public class Game extends ApplicationAdapter {
 			if(isCollisionScreen || isCollisionActor) {
 				if(isCollisionActor) {
 					dropSound.play();
-					bucket.influenceRainCollision(raindrop.mass);
+					bucket.influenceRainCollision(raindrop.density);
 				}
 				iter.remove();
 			}

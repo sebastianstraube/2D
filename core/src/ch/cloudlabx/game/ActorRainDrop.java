@@ -13,8 +13,7 @@ public class ActorRainDrop extends ActorBase {
         this.center.y = height / 2;
 
         this.maxAcc = Constants.PHYSIC_RAINDROP_MAX_ACCELERATION;
-        this.maxVel = Constants.PHYSIC_RAINDROP_MAX_VELOCITY;
-        this.mass = Constants.PHYSIC_RAINDROP_MASS;
+        this.density = Constants.PHYSIC_MATERIAL_DENSITY_WATER;
     }
 
     public ActorRainDrop(float posx, float posy, float width, float height) {

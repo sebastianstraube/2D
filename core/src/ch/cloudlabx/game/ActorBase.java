@@ -28,19 +28,20 @@ public abstract class ActorBase extends Actor {
     protected Vector2 center = new Vector2();
     protected Vector2 vel = new Vector2();
     protected Vector2 acc = new Vector2();
-    protected float mass;
+    protected float density;
+    protected float volume;
     protected static ShapeRenderer shapeRenderer;
 
     private ActorBase(){
         shapeRenderer = new ShapeRenderer();
         this.maxAcc = Constants.PHYSIC_DEFAULT_MAX_ACCELERATION;
         this.maxVel = Constants.PHYSIC_DEFAULT_MAX_VELOCITY;
-        this.mass = Constants.PHYSIC_DEFAULT_MASS;
+        this.density = Constants.PHYSIC_DEFAULT_DENSITY;
     }
 
-    public ActorBase(float width, float height, float mass){
+    public ActorBase(float width, float height, float density){
         this();
-        this.mass = mass;
+        this.density = density;
         setWidth(width);
         setHeight(height);
     }
@@ -150,7 +151,7 @@ public abstract class ActorBase extends Actor {
     
     public void applyPhysicsGravityWorld(){
         Vector2 gravity = new Vector2(0, 0.1f);
-        Vector2 force = gravity.scl(mass).cpy();
+        Vector2 force = gravity.scl(density).cpy();
         applyPhysicsForce(force); // pointing down like gravity
     }
 
@@ -158,7 +159,7 @@ public abstract class ActorBase extends Actor {
     // pointing down like gravity = new Vector2(0,-1);
     public void applyPhysicsGravityRandom(){
         Vector2 gravity = new Vector2(0, MathUtils.random(0,100)/65);
-        gravity.scl(mass);
+        gravity.scl(density);
         applyPhysicsForce(gravity);
     }
 

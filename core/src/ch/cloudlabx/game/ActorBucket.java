@@ -18,8 +18,7 @@ public class ActorBucket extends ActorBase {
         this.center.x = width / 2;
         this.center.y = height / 2;
         this.maxAcc = Constants.PHYSIC_BUCKET_MAX_ACCELERATION;
-        this.maxVel = Constants.PHYSIC_BUCKET_MAX_VELOCITY;
-        this.mass = Constants.PHYSIC_BUCKET_MASS;
+        this.density = Constants.PHYSIC_MATERIAL_DENSITY_METAL;
     }
 
     public ActorBucket(float posx, float posy, float width, float height) {
@@ -36,7 +35,7 @@ public class ActorBucket extends ActorBase {
     public void influenceRainCollision(float mass){
         if(this.maxVel > 0.001) this.maxVel -= mass*0.01f;
         if(this.maxAcc > 0.001) this.maxAcc -= mass*0.01f;
-        this.mass += mass*0.01f;
+        this.density += density*0.01f;
         //System.out.println(maxVel);
     }
 

@@ -33,7 +33,7 @@ public class ActorWater extends ActorBase {
         if(maxVel > 0 || maxAcc > 0) {
             maxVel -= (0.001);
             maxVel -= (0.001);
-            mass += (0.001);
+            density += (0.001);
         }
         
         //System.out.println(maxVel);
