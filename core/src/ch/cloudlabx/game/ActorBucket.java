@@ -47,7 +47,7 @@ public class ActorBucket extends ActorBase {
         isCollisionScreen();
         applyPhysicsAttraction(mousePosition);
         applyPhysicsGravityWorld();
-        drawDebugLine(mousePosition);;
+        drawDebugLine(batch, mousePosition);;
     }
 
     @Override

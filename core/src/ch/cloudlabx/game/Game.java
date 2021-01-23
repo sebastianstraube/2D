@@ -91,7 +91,7 @@ public class Game extends ApplicationAdapter {
 
 		//draw actor
 		bucket.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
-		circle.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
+		if(Constants.DEBUG)circle.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
 		//draw Rain
 		if(MathUtils.random(0, 100) <= MathUtils.random(0, rainIntensity)) {
 			spawnRaindrop();
@@ -100,10 +100,12 @@ public class Game extends ApplicationAdapter {
 		for (Iterator<ActorRainDrop> iter = raindrops.iterator(); iter.hasNext(); ) {
 
 			ActorRainDrop raindrop = iter.next();
-			raindrop.draw(batch, 0.5f, new Vector2(mouse_position.x, mouse_position.y));
-			boolean isCollisionActor = ActorBase.isCollisionActor(bucket, raindrop);
+			
+			raindrop.draw(batch, 0.5f);
+			raindrop.applyPhysicsAttraction(bucket.pos);
+			boolean isCollisionActor = ActorBase.isCollisionActor(batch, bucket, raindrop);
 			boolean isCollisionScreen = raindrop.isCollisionScreen();
-
+			
 			if(isCollisionScreen || isCollisionActor) {
 				if(isCollisionActor) {
 					dropSound.play();

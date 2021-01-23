@@ -2,11 +2,9 @@ package ch.cloudlabx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 
 public class ActorRainDrop extends ActorBase {
     
-    public float raindropSpeed = 100;
     private Texture texture;
     
     public ActorRainDrop(float width, float height) {
@@ -26,17 +24,11 @@ public class ActorRainDrop extends ActorBase {
         this(x, y, sideLength, sideLength);
     }
 
-    public void draw(Batch batch, float parentAlpha, Vector2 mousePosition) {
-        this.draw(batch, parentAlpha);
-        isCollisionScreen();
-        //calculatePhysicsAttraction(mousePosition);
-        applyPhysicsGravityWorld();
-        //drawDebugLine(mousePosition);;
-    }
-
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(texture, pos.x, pos.y);
+        isCollisionScreen();
+        applyPhysicsGravityWorld();
     }
 
 }

@@ -17,7 +17,6 @@ public class ActorBall extends ActorBase {
         this.maxVel = 15f;
         this.center.x = radius;
         this.center.y = radius;
-        
     }
 
     public ActorBall(float posx, float posy, float radius) {

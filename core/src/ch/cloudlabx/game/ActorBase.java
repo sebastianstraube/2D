@@ -33,8 +33,8 @@ public abstract class ActorBase extends Actor {
 
     private ActorBase(){
         shapeRenderer = new ShapeRenderer();
-        this.maxAcc = 2f;
-        this.maxVel = 30f;
+        this.maxAcc = 0.1f;
+        this.maxVel = 10f;
     }
 
     public ActorBase(float width, float height, float mass){
@@ -94,20 +94,22 @@ public abstract class ActorBase extends Actor {
      * }
      */
 
-    public static void drawLine(Vector2 v1, Vector2 v2, Color c) {
+    public static void drawLine(Batch batch, Vector2 v1, Vector2 v2, Color c) {
+        batch.end();
         Gdx.gl.glLineWidth(2);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(c);
         shapeRenderer.line(new Vector3(v1, 0), new Vector3(v2, 0));
         shapeRenderer.end();
         Gdx.gl.glLineWidth(1);
+        batch.begin();
     }
 
-    public static boolean isCollisionActor(ActorBase actorA, ActorBase actorB) {
+    public static boolean isCollisionActor(Batch batch, ActorBase actorA, ActorBase actorB) {
         Vector2 dist = actorB.pos.cpy().sub(actorA.pos);
         if (Constants.DEBUG){
-            drawLine(actorA.pos, actorB.pos, Color.WHITE);
-            drawLine(actorA.pos, actorB.pos, Color.GREEN);
+            drawLine(batch, actorA.pos, actorB.pos, Color.WHITE);
+            drawLine(batch, actorA.pos, actorB.pos, Color.GREEN);
         }
         
         return dist.len() <= (actorA.getWidth());
@@ -169,12 +171,12 @@ public abstract class ActorBase extends Actor {
         acc.scl(0f);
     }
 
-    public void drawDebugLine(Vector2 mousePosition){
+    public void drawDebugLine(Batch batch, Vector2 mousePosition){
         if (Constants.DEBUG) {
-            drawLine(pos, mousePosition, Color.BLUE);
-            drawLine(new Vector2(10, 0), new Vector2(10, mousePosition.cpy().sub(pos).len() * 10), Color.WHITE);
-            drawLine(new Vector2(20, 0), new Vector2(20, acc.len() * 10), Color.WHITE);
-            drawLine(new Vector2(30, 0), new Vector2(30, vel.len() * 10), Color.WHITE);
+            drawLine(batch, pos, mousePosition, Color.BLUE);
+            drawLine(batch, new Vector2(10, 0), new Vector2(10, mousePosition.cpy().sub(pos).len() * 10), Color.WHITE);
+            drawLine(batch, new Vector2(20, 0), new Vector2(20, acc.len() * 10), Color.WHITE);
+            drawLine(batch, new Vector2(30, 0), new Vector2(30, vel.len() * 10), Color.WHITE);
             // System.out.println(mouse_dst.len() + " : " + acc.len() + " : " + vel.len());
         }
     }
