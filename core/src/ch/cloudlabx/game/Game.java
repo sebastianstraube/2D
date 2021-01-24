@@ -17,13 +17,16 @@ import com.badlogic.gdx.audio.Sound;
 
 public class Game extends ApplicationAdapter {
 	
+	private static Batch batch;
+
 	//assets
 	public static Sound dropSound;
 	public static Music rainMusic;
 
-	private Batch batch;
 	private ActorBucket bucket;
 	private ActorCircle circle;
+	private ActorCircle circleR;
+	private ActorWater water;
 	private Vector3 mouse_position;
 	//private GameStage gameStage;
 	private OrthographicCamera cam;
@@ -33,7 +36,8 @@ public class Game extends ApplicationAdapter {
 
 	private void spawnRaindrop() {
 		float dropSize = MathUtils.random(6,64);
-		ActorRainDrop raindrop = new ActorRainDrop(MathUtils.random(0, Gdx.app.getGraphics().getWidth()-64), Gdx.app.getGraphics().getHeight(), dropSize, dropSize);
+		ActorRainDrop raindrop = new ActorRainDrop(Constants.PHYSIC_MATERIAL_DENSITY_WATER, dropSize, dropSize);
+		raindrop.setPosition(MathUtils.random(0, Gdx.app.getGraphics().getWidth()-dropSize), Gdx.app.getGraphics().getHeight()-dropSize);
 		raindrops.add(raindrop);
 	 }
 
@@ -55,10 +59,18 @@ public class Game extends ApplicationAdapter {
 		mouse_position = new Vector3(0,0,0);
 
 		//actor
-		bucket = new ActorBucket(64,64);
+		bucket = new ActorBucket(Constants.PHYSIC_MATERIAL_DENSITY_METAL, 64,64);
 
 		//ball actor
-		circle = new ActorCircle(64);
+		circle = new ActorCircle(Constants.PHYSIC_MATERIAL_DENSITY_METAL, 32);
+		circle.setPosition(250, 350);
+
+		circleR = new ActorCircle(Constants.PHYSIC_MATERIAL_DENSITY_WOOD, 32);
+		circleR.setPosition(500, 350);
+
+		//actor water 
+		water = new ActorWater(Constants.PHYSIC_MATERIAL_DENSITY_WATER, 400, 100);
+		water.setPosition(0, 0);
 
 		//cam
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -88,27 +100,41 @@ public class Game extends ApplicationAdapter {
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 
-		//draw actor
+		//bucket actor
 		bucket.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
-		if(Constants.DEBUG)circle.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
-		//draw Rain
+		ActorPhysics.applyPhysicsGravityWorld(bucket);
+		ActorPhysics.applyPhysicsAttraction(bucket, new Vector2(mouse_position.x, mouse_position.y));
+
+		//Circle Actor
+		circle.draw(batch, 1f);
+		ActorPhysics.applyPhysicsGravityWorld(circle);
+		
+		circleR.draw(batch, 1f);
+		ActorPhysics.applyPhysicsGravityWorld(circleR);
+
+		//if(Constants.DEBUG) circle.draw(batch, 1f, new Vector2(mouse_position.x, mouse_position.y));
+
+		//Circle Water
+		water.draw(batch, 1f);
+		
+
+		//Rain
 		if(MathUtils.random(0, 100) <= MathUtils.random(0, rainIntensity)) {
 			spawnRaindrop();
 		}
-
 		for (Iterator<ActorRainDrop> iter = raindrops.iterator(); iter.hasNext(); ) {
 
-			ActorRainDrop raindrop = iter.next();
-			
+			ActorRainDrop raindrop = iter.next();			
+			ActorPhysics.applyPhysicsGravityWorld(raindrop);
 			raindrop.draw(batch, 0.5f);
-			raindrop.applyPhysicsAttraction(bucket.pos);
+
 			boolean isCollisionActor = ActorBase.isCollisionActor(batch, bucket, raindrop);
 			boolean isCollisionScreen = raindrop.isCollisionScreen();
 			
 			if(isCollisionScreen || isCollisionActor) {
 				if(isCollisionActor) {
 					dropSound.play();
-					bucket.influenceRainCollision(raindrop.density);
+					bucket.influenceRainCollision(raindrop.weight*10);
 				}
 				iter.remove();
 			}
