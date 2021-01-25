@@ -13,7 +13,7 @@ public class ActorBucket extends ActorBase {
 
     public ActorBucket(float shapeType, float density, float width, float height){
         super(shapeType, density, width, height);
-        this.texture = getTextureScaled(Constants.TEXTURE_BUCKET, (int)width, (int)height);
+        this.texture = ActorHelper.getTextureScaled(Constants.TEXTURE_BUCKET, (int)width, (int)height);
     }
 
     //influence behaviour

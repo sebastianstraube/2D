@@ -9,7 +9,7 @@ public class ActorRainDrop extends ActorBase {
     
     public ActorRainDrop(float shapeType, float density, float width, float height) {
         super(shapeType, density, width, height);
-        this.texture = getTextureScaled(Constants.TEXTURE_RAINDROP, (int)width, (int)height);
+        this.texture = ActorHelper.getTextureScaled(Constants.TEXTURE_RAINDROP, (int)width, (int)height);
     }
 
     @Override
