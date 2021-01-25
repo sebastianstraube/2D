@@ -11,7 +11,6 @@ public abstract class ActorBase extends Actor {
     protected Vector2 acc;
 
     //constant
-    protected float gravityConstant; // m/s2
     public float dragCd;
     //input
     protected Vector2 sizeBody; // size of the body in cm3 !! is not a vector body, just holds the size data
@@ -48,7 +47,6 @@ public abstract class ActorBase extends Actor {
         acc = new Vector2();
 
         dragCd = shapeType;
-        this.gravityConstant = Constants.PHYSIC_FORCE_GRAVITY_EARTH; // m/s2
         this.density = density;
     }
 

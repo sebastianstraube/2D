@@ -13,13 +13,12 @@ public class ActorPhysics {
     }
 
     public static boolean isCollisionScreen(ActorBase a){
-        boolean isCollisionScreen = false;
-        if (a.posCenter.x < 0) isCollisionScreen = true;
-        if (a.posCenter.x > Gdx.app.getGraphics().getWidth()) isCollisionScreen = true;
-        if (a.posCenter.y < 0) isCollisionScreen = true;
-        if (a.posCenter.y > Gdx.app.getGraphics().getHeight()) isCollisionScreen = true;
-
-        return isCollisionScreen;
+        return (
+            a.posCenter.x < 0 || 
+            a.posCenter.x > Gdx.app.getGraphics().getWidth() ||
+            a.posCenter.y < 0 ||
+            a.posCenter.y > Gdx.app.getGraphics().getHeight()
+            ) ? true : false;
     }
 
     //https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/shaped.html
@@ -70,12 +69,11 @@ public class ActorPhysics {
         addDrag(actor);
     }
 
-
     public static void applyPhysicsForce(ActorBase actor, Vector2 force){
         actor.volume = actor.sizeBody.x*actor.sizeBody.y;
         actor.mass = actor.density * actor.volume;
         //actor.density = actor.mass / actor.volume; we look for mass volume can be calculated and density is a constant
-        actor.weight = actor.mass * actor.gravityConstant; // weight + direction = force vector http://hyperphysics.phy-astr.gsu.edu/hbase/mass.html#wgt
+        actor.weight = actor.mass * Constants.PHYSIC_FORCE_GRAVITY_EARTH; // m/s2; // weight + direction = force vector http://hyperphysics.phy-astr.gsu.edu/hbase/mass.html#wgt
         actor.acc.add(force); // accelerate depending how strong the force is
         actor.vel.add(actor.acc);
         

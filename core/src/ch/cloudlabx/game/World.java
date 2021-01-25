@@ -2,9 +2,7 @@ package ch.cloudlabx.game;
 
 public class World {
     
-
-
-    //TODO implement atmosphere
+    //TODO implement atmosphere for drag resistance
     //https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/airsim.html
     //https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/falling.html#:~:text=But%20in%20the%20atmosphere%2C%20the,the%20drag%20coefficient%20is%20based.
     /**
@@ -22,5 +20,7 @@ public class World {
     object, and the acceleration will become equal to zero. The object will then fall at a constant velocity as described by Newton's First Law of Motion. The constant velocity is 
     called the terminal velocity.
      */
+
+     //TODO implement WIND for environmental force influence
     
 }
