@@ -1,15 +1,8 @@
 package ch.cloudlabx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-
 
 public abstract class ActorBase extends Actor {
     
@@ -85,21 +78,6 @@ public abstract class ActorBase extends Actor {
 
     public void setDragCoefficient(float dragCoefficient){
         this.dragCd = dragCoefficient;
-    }
-
-    public static boolean isCollisionActor(Batch batch, ActorBase actorA, ActorBase actorB) {
-        Vector2 dist = actorB.posCenter.cpy().sub(actorA.posCenter);
-        return dist.len() <= (actorA.getWidth());
-    }
-
-    public boolean isCollisionScreen(){
-        boolean isCollisionScreen = false;
-        if (posCenter.x < 0) isCollisionScreen = true;
-        if (posCenter.x > Gdx.app.getGraphics().getWidth()) isCollisionScreen = true;
-        if (posCenter.y < 0) isCollisionScreen = true;
-        if (posCenter.y > Gdx.app.getGraphics().getHeight()) isCollisionScreen = true;
-
-        return isCollisionScreen;
     }
 
     @Override

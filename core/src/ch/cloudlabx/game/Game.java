@@ -24,6 +24,7 @@ public class Game extends ApplicationAdapter {
 	
 	//assets
 	public static Sound dropSound;
+	public static Sound dropSoundBucket;
 	public static Music rainMusic;
 
 	private ActorBucket bucket;
@@ -43,14 +44,12 @@ public class Game extends ApplicationAdapter {
 		ActorRainDrop raindrop = new ActorRainDrop(Constants.PHYSIC_DRAG_SHAPE_STREAMLINED, Constants.PHYSIC_MATERIAL_DENSITY_WATER, dropSize, dropSize);
 		raindrop.setPosition(MathUtils.random(0, Gdx.app.getGraphics().getWidth()-dropSize), Gdx.app.getGraphics().getHeight()-dropSize);
 		raindrops.add(raindrop);
-
-		//DebugHelper.drawLineActor(batch, shapeRenderer, Color.WHITE, bucket, raindrop);
 	 }
 
 	@Override
 	public void create () {
 
-		//cam
+		//Camera
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		//cam.position.x = Gdx.graphics.getWidth()/2; 
@@ -88,7 +87,8 @@ public class Game extends ApplicationAdapter {
 
 		//Asset Loading
 		// load the drop sound effect and the rain background "music"
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop2.wav"));
+		dropSoundBucket = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
   
 		// start the playback of the background music immediately
@@ -134,14 +134,17 @@ public class Game extends ApplicationAdapter {
 			raindrop.draw(batch, 0.5f);
 			DebugHelper.drawLineBetweenActor(batch, shapeRenderer, Color.GREEN, bucket, raindrop);
 
-			boolean isCollisionActor = ActorBase.isCollisionActor(batch, bucket, raindrop);
-			boolean isCollisionScreen = raindrop.isCollisionScreen();
+			boolean isCollisionActor = ActorPhysics.isCollisionActor(batch, bucket, raindrop);
+			boolean isCollisionScreen = ActorPhysics.isCollisionScreen(raindrop);
 			
 			if(isCollisionScreen || isCollisionActor) {
 				if(isCollisionActor) {
-					dropSound.play();
 					bucket.influenceRainCollision(raindrop);
+					dropSoundBucket.play();
 				}
+				
+				//TODO find a better sound
+				//if(isCollisionScreen) dropSound.play();
 				iter.remove();
 			}
 		}

@@ -1,10 +1,27 @@
 package ch.cloudlabx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class ActorPhysics {
     
+    public static boolean isCollisionActor(Batch batch, ActorBase actorA, ActorBase actorB) {
+        Vector2 dist = actorB.posCenter.cpy().sub(actorA.posCenter);
+        return dist.len() <= (actorA.getWidth());
+    }
+
+    public static boolean isCollisionScreen(ActorBase a){
+        boolean isCollisionScreen = false;
+        if (a.posCenter.x < 0) isCollisionScreen = true;
+        if (a.posCenter.x > Gdx.app.getGraphics().getWidth()) isCollisionScreen = true;
+        if (a.posCenter.y < 0) isCollisionScreen = true;
+        if (a.posCenter.y > Gdx.app.getGraphics().getHeight()) isCollisionScreen = true;
+
+        return isCollisionScreen;
+    }
+
     //https://www.grc.nasa.gov/www/k-12/VirtualAero/BottleRocket/airplane/shaped.html
     //https://www.grc.nasa.gov/www/k-12/airplane/sized.html
     //Drag = DragCoefficient(Cd) * density * ((velocity*velocity)/2) * (attack surface)
