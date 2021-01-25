@@ -4,16 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
-public class ActorWater extends ActorBase {
-    
-    public int fillRate;
-    public int rainDropsNr=0;
+public class ActorRectangle extends ActorBase {
 
-    public ActorWater(float shapeType, float density, float width, float height) {
-        super(shapeType, density, width, height);
+    public Vector2 posStart;
+
+    public ActorRectangle(float shapeType, float density) {
+        super(shapeType, density);
     }
 
     @Override
@@ -24,7 +23,7 @@ public class ActorWater extends ActorBase {
         Gdx.gl.glLineWidth(2);
         Game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Game.shapeRenderer.setColor(Color.BLUE);
-        Game.shapeRenderer.rect(0, 0, sizeBody.x, sizeBody.y);
+        Game.shapeRenderer.rect(posStart.x, posStart.y, sizeBody.x, sizeBody.y);
         Game.shapeRenderer.end();
         Gdx.gl.glLineWidth(1);
 

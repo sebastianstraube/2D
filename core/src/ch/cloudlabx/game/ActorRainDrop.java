@@ -7,14 +7,15 @@ public class ActorRainDrop extends ActorBase {
     
     private Texture texture;
     
-    public ActorRainDrop(float density, float width, float height) {
-        super(density, width, height);
+    public ActorRainDrop(float shapeType, float density, float width, float height) {
+        super(shapeType, density, width, height);
         this.texture = getTextureScaled(Constants.TEXTURE_RAINDROP, (int)width, (int)height);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, pos.x, pos.y);
+        batch.enableBlending();
+        batch.draw(texture, posCenter.x-(sizeBody.x/2), posCenter.y-(sizeBody.y/2));
     }
 
 }

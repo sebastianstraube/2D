@@ -1,11 +1,9 @@
 package ch.cloudlabx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -15,14 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public abstract class ActorBase extends Actor {
     
-    protected static ShapeRenderer shapeRenderer;   
-    protected Vector2 pos;
+    protected Vector2 posCenter;
     protected Vector2 vel;
     protected Vector2 acc;
 
     //constant
     protected float gravityConstant; // m/s2
-
+    public float dragCd;
     //input
     protected Vector2 sizeBody; // size of the body in cm3 !! is not a vector body, just holds the size data
     
@@ -30,7 +27,7 @@ public abstract class ActorBase extends Actor {
     protected float mass; // weight is dependent on gravity, needs to be calculated (in kg)
     protected float volume;
     protected float density; // amount of matter within a certain volume; density = mass(g) / volume(cm3)
-    
+
     //Weight is the force the earth exerts on the body. Force of gravity is the force per unit mass exert by earth or gravitational field strength.
     protected float weight; //Weight(Newton) = Mass(Kg) * Acceleration(N/kg or gravity earth = 9.81 m/s2; moon = 1.6 m/s2; jupiter = 25 m/s2)
     protected Vector2 force; // Force(newtons) = mass(kg)*acceleration(m/s2)
@@ -52,30 +49,42 @@ public abstract class ActorBase extends Actor {
     torque and is calculated by the cross product. 
      */
 
-    public ActorBase(float density, float width, float height){
-        setWidth(width);
-        setHeight(height);
-        shapeRenderer = new ShapeRenderer();
+    public ActorBase(float density, float shapeType){
         force = new Vector2();
-        pos = new Vector2();
         vel = new Vector2();
         acc = new Vector2();
 
-        this.gravityConstant  = Constants.PHYSIC_FORCE_GRAVITY_EARTH; // m/s2
-        this.sizeBody = new Vector2(width, height);
+        dragCd = shapeType;
+        this.gravityConstant = Constants.PHYSIC_FORCE_GRAVITY_EARTH; // m/s2
         this.density = density;
-        ActorPhysics.initPhysics(this);
     }
 
+    public ActorBase(float density, float shapeType, float width, float height){
+        this(density, shapeType);
+        this.setSize(width, height);
+    }
 
+    public void setSize(float width, float height){
+        setWidth(width);
+        setHeight(height);
+        this.posCenter = new Vector2(width/2, height/2);
+        this.sizeBody = new Vector2(width, height);
+    }
 
     //position is in the center of the body
-    public void setPosition(float posX, float posY){
-        this.pos.set(posX, posY);
+    @Override
+    public void setPosition(float x, float y){
+        super.setPosition(x,y);
+        this.posCenter.x = x;
+        this.posCenter.y = y;
     }
 
     public void setDensity(float d){
         this.density=d;
+    }
+
+    public void setDragCoefficient(float dragCoefficient){
+        this.dragCd = dragCoefficient;
     }
 
     public static Texture getTextureScaled(String filename, int resizeX, int resizeY){
@@ -92,55 +101,19 @@ public abstract class ActorBase extends Actor {
         return texture;
     }
 
-    public static void drawLine(Batch batch, Vector2 v1, Vector2 v2, Color c) {
-        batch.end();
-        Gdx.gl.glLineWidth(2);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(c);
-        shapeRenderer.line(new Vector3(v1, 0), new Vector3(v2, 0));
-        shapeRenderer.end();
-        Gdx.gl.glLineWidth(1);
-        batch.begin();
-    }
-
     public static boolean isCollisionActor(Batch batch, ActorBase actorA, ActorBase actorB) {
-        Vector2 dist = actorB.pos.cpy().sub(actorA.pos);
-        if (Constants.DEBUG){
-            drawLine(batch, actorA.pos, actorB.pos, Color.WHITE);
-            drawLine(batch, actorA.pos, actorB.pos, Color.GREEN);
-        }
-        
+        Vector2 dist = actorB.posCenter.cpy().sub(actorA.posCenter);
         return dist.len() <= (actorA.getWidth());
     }
 
     public boolean isCollisionScreen(){
         boolean isCollisionScreen = false;
-        if (pos.x < 0) {
-            pos.x = 0;
-            isCollisionScreen = true;
-        }
-        if (pos.x > Gdx.app.getGraphics().getWidth()) {
-            pos.x = Gdx.app.getGraphics().getWidth();
-            isCollisionScreen = true;
-        }
-        if (pos.y < 0) {
-            isCollisionScreen = true;
-        }
-        if (pos.y > Gdx.app.getGraphics().getHeight()) {
-            pos.y = Gdx.app.getGraphics().getHeight();
-        }
+        if (posCenter.x < 0) isCollisionScreen = true;
+        if (posCenter.x > Gdx.app.getGraphics().getWidth()) isCollisionScreen = true;
+        if (posCenter.y < 0) isCollisionScreen = true;
+        if (posCenter.y > Gdx.app.getGraphics().getHeight()) isCollisionScreen = true;
 
         return isCollisionScreen;
-    }
-
-    public void drawDebugLine(Batch batch, Vector2 v1, Vector2 v2){
-        if (Constants.DEBUG) {
-            drawLine(batch, v1, v2, Color.BLUE);
-            drawLine(batch, new Vector2(10, 0), new Vector2(10, (1/v2.cpy().sub(pos).len())*100), Color.WHITE);
-            drawLine(batch, new Vector2(20, 0), new Vector2(20, (1/acc.len())*100), Color.WHITE);
-            drawLine(batch, new Vector2(30, 0), new Vector2(30, (1/vel.len())*100), Color.WHITE);
-            // System.out.println(mouse_dst.len() + " : " + acc.len() + " : " + vel.len());
-        }
     }
 
     @Override

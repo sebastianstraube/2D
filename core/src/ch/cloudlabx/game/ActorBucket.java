@@ -11,31 +11,24 @@ public class ActorBucket extends ActorBase {
     public int rainDropsNr;
     private Texture texture;
 
-    public ActorBucket(float density, float width, float height){
-        super(density, width, height);
+    public ActorBucket(float shapeType, float density, float width, float height){
+        super(shapeType, density, width, height);
         this.texture = getTextureScaled(Constants.TEXTURE_BUCKET, (int)width, (int)height);
     }
 
-    public ActorBucket(float density, float posx, float posy, float width, float height) {
-        this(density, width, height);
-        pos.x = posx;
-        pos.y = posy;
-    }
-
     //influence behaviour
-    public void influenceRainCollision(float weight){
-        this.weight += weight;
-        //System.out.println(this.weight);
+    public void influenceRainCollision(ActorBase a){
+        this.density += a.density; //should be mass but density * volume is the starting point of physic calculation
+        System.out.println(this.density);
     }
 
     public void draw(Batch batch, float parentAlpha, Vector2 mousePosition) {
         draw(batch, parentAlpha);
-        drawDebugLine(batch, pos, mousePosition);;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, pos.x, pos.y);
+        batch.draw(texture, posCenter.x-(sizeBody.x/2), posCenter.y-(sizeBody.y/2));
     }
 
 }
