@@ -7,28 +7,15 @@ public class ActorRainDrop extends ActorBase {
     
     private Texture texture;
     
-    public ActorRainDrop(float width, float height) {
-        super(width, height, width/10);
-        this.center.x = width / 2;
-        this.center.y = height / 2;
-    }
-
-    public ActorRainDrop(float posx, float posy, float width, float height) {
-        this(width, height);
-        this.texture = getTextureScaled(Constants.TEXTURE_RAINDROP, (int)width, (int)height);
-        pos.x = posx;
-        pos.y = posy;
-    }
-
-    public ActorRainDrop(float x, float y, float sideLength) {
-        this(x, y, sideLength, sideLength);
+    public ActorRainDrop(float shapeType, float density, float width, float height) {
+        super(shapeType, density, width, height);
+        this.texture = ActorHelper.getTextureScaled(Constants.TEXTURE_RAINDROP, (int)width, (int)height);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        batch.draw(texture, pos.x, pos.y);
-        isCollisionScreen();
-        applyPhysicsGravityWorld();
+        batch.enableBlending();
+        batch.draw(texture, posCenter.x-(sizeBody.x/2), posCenter.y-(sizeBody.y/2));
     }
 
 }

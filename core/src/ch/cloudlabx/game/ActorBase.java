@@ -1,70 +1,104 @@
 package ch.cloudlabx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-
-//import com.badlogic.gdx.Input;
-//import com.badlogic.gdx.InputAdapter;
-    // TODO implement keyboard input
-    /*
-     * private boolean KEY_DOWN_UP = false; private boolean KEY_DOWN_DOWN = false;
-     * private boolean KEY_DOWN_LEFT = false; private boolean KEY_DOWN_RIGHT =
-     * false;
-     */
 
 public abstract class ActorBase extends Actor {
     
-    public Vector2 pos = new Vector2();
-    public Vector2 size = new Vector2();
-    protected float maxAcc, maxVel;
-    protected Vector2 center = new Vector2();
-    protected Vector2 vel = new Vector2();
-    protected Vector2 acc = new Vector2();
-    protected float mass;
-    protected static ShapeRenderer shapeRenderer;
+    protected Vector2 posCenter;
+    protected Vector2 vel;
+    protected Vector2 acc;
 
-    private ActorBase(){
-        shapeRenderer = new ShapeRenderer();
-        this.maxAcc = 0.1f;
-        this.maxVel = 10f;
+    //constant
+    public float dragCd;
+    //input
+    protected Vector2 sizeBody; // size of the body in cm3 !! is not a vector body, just holds the size data
+    
+    // calculation
+    protected float mass; // weight is dependent on gravity, needs to be calculated (in kg)
+    protected float volume;
+    protected float density; // amount of matter within a certain volume; density = mass(g) / volume(cm3)
+
+    //Weight is the force the earth exerts on the body. Force of gravity is the force per unit mass exert by earth or gravitational field strength.
+    protected float weight; //Weight(Newton) = Mass(Kg) * Acceleration(N/kg or gravity earth = 9.81 m/s2; moon = 1.6 m/s2; jupiter = 25 m/s2)
+    protected Vector2 force; // Force(newtons) = mass(kg)*acceleration(m/s2)
+
+    //protected float work = Force dot Distance
+    /*
+    The dot product is often used to find the work, W, performed by a force F (in Newtons,
+    N) acting on an object, moving it a distance D in meters. That is, = = > ∙ ?. Note that
+    work W is a scalar. Often, the force is applied at an angle to the direction that the object is
+    moving. Furthermore, the force and distance are stated as scalar values and the angle  is
+    given, so that when finding > ∙ ?, we often use the formula |F||D| cos theta. 
+    */
+
+    /**
+     * The cross product is used to find the torque, denoted @ (the Greek letter tau), formed by
+    the combined action of two vectors  and. We can think of a force  “pushing” against a vector, where 
+    ’s foot acts as a pivot, much like the hinges of a door. In a broad sense, vectors  and 
+    combine to form a “twisting” action at a point. This twisting is
+    torque and is calculated by the cross product. 
+     */
+
+    public ActorBase(float density, float shapeType){
+        force = new Vector2();
+        vel = new Vector2();
+        acc = new Vector2();
+
+        dragCd = shapeType;
+        this.density = density;
     }
 
-    public ActorBase(float width, float height, float mass){
-        this();
-        this.mass = mass;
+    public ActorBase(float density, float shapeType, float width, float height){
+        this(density, shapeType);
+        this.setSize(width, height);
+    }
+
+    public void setSize(float width, float height){
         setWidth(width);
         setHeight(height);
+        this.posCenter = new Vector2(width/2, height/2);
+        this.sizeBody = new Vector2(width, height);
     }
 
-    public ActorBase(float radius){
-        this();
-        setWidth(radius*2);
-        setHeight(radius*2);
+    //position is in the center of the body
+    @Override
+    public void setPosition(float x, float y){
+        super.setPosition(x,y);
+        this.posCenter.x = x;
+        this.posCenter.y = y;
     }
 
-    public static Texture getTextureScaled(String filename, int resizeX, int resizeY){
-        Pixmap pixmap200 = new Pixmap(Gdx.files.internal(filename+".png"));
-        Pixmap pixmap100 = new Pixmap(resizeX, resizeY, pixmap200.getFormat());
-        pixmap100.drawPixmap(pixmap200,
-                0, 0, pixmap200.getWidth(), pixmap200.getHeight(),
-                0, 0, pixmap100.getWidth(), pixmap100.getHeight()
-        );
-        Texture texture = new Texture(pixmap100);
-        pixmap200.dispose();
-        pixmap100.dispose();
-
-        return texture;
+    public void setDensity(float d){
+        this.density=d;
     }
 
-    /*
+    public void setDragCoefficient(float dragCoefficient){
+        this.dragCd = dragCoefficient;
+    }
+
+    @Override
+    public String toString(){
+        return super.toString()+
+        "\tvel: "+ vel.len() +
+        "\tacc: "+ acc.len()+
+        "\tsize: "+sizeBody.x+":"+sizeBody.y+
+        "\tdensity: " + density +
+        "\tvolume:" + volume;
+    }
+
+    @Override
+    public abstract void draw(Batch batch, float parentAlpha);
+
+    // TODO implement keyboard input
+    //import com.badlogic.gdx.Input;
+    //import com.badlogic.gdx.InputAdapter;
+    /* private boolean KEY_DOWN_UP = false; private boolean KEY_DOWN_DOWN = false;
+     * private boolean KEY_DOWN_LEFT = false; private boolean KEY_DOWN_RIGHT =
+     * false;
+     *
+     *
      * public void initInput(){
      * 
      * if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) bucket.x -= 200 *
@@ -93,95 +127,4 @@ public abstract class ActorBase extends Actor {
      * 
      * }
      */
-
-    public static void drawLine(Batch batch, Vector2 v1, Vector2 v2, Color c) {
-        batch.end();
-        Gdx.gl.glLineWidth(2);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(c);
-        shapeRenderer.line(new Vector3(v1, 0), new Vector3(v2, 0));
-        shapeRenderer.end();
-        Gdx.gl.glLineWidth(1);
-        batch.begin();
-    }
-
-    public static boolean isCollisionActor(Batch batch, ActorBase actorA, ActorBase actorB) {
-        Vector2 dist = actorB.pos.cpy().sub(actorA.pos);
-        if (Constants.DEBUG){
-            drawLine(batch, actorA.pos, actorB.pos, Color.WHITE);
-            drawLine(batch, actorA.pos, actorB.pos, Color.GREEN);
-        }
-        
-        return dist.len() <= (actorA.getWidth());
-    }
-
-    public boolean isCollisionScreen(){
-        boolean isCollisionScreen = false;
-        if (pos.x < 0) {
-            pos.x = 0;
-            isCollisionScreen = true;
-        }
-        if (pos.x > Gdx.app.getGraphics().getWidth() - center.x) {
-            pos.x = Gdx.app.getGraphics().getWidth() - center.x;
-            isCollisionScreen = true;
-        }
-        if (pos.y < 0) {
-            pos.y = 0;
-            isCollisionScreen = true;
-        }
-        if (pos.y > Gdx.app.getGraphics().getHeight() - center.y) {
-            pos.y = Gdx.app.getGraphics().getHeight() - center.y;
-        }
-
-        return isCollisionScreen;
-    }
-
-    public void applyPhysicsAttraction(Vector2 attractorPosition){
-        Vector2 distance = attractorPosition.cpy().sub(pos).nor();
-        //distance.nor();
-        acc = distance.cpy(); // accelerate depending how far the attractorPosition is away from the object
-        acc.limit(maxAcc);
-        vel.add(acc);
-        vel.limit(maxVel);
-        pos.add(vel);
-    }
-
-    
-    public void applyPhysicsGravityWorld(){
-        Vector2 gravity = new Vector2(0, 0.1f);
-        Vector2 force = gravity.scl(mass).cpy();
-        applyPhysicsForce(force); // pointing down like gravity
-    }
-
-
-    // pointing down like gravity = new Vector2(0,-1);
-    public void applyPhysicsGravityRandom(){
-        Vector2 gravity = new Vector2(0, MathUtils.random(0,100)/65);
-        gravity.scl(mass);
-        applyPhysicsForce(gravity);
-    }
-
-    // pointing down like gravity = new Vector2(0,-1);
-    public void applyPhysicsForce(Vector2 force){
-        acc.sub(force); // accelerate depending how strong the force is
-        acc.limit(maxAcc);
-        vel.add(acc);
-        vel.limit(maxVel);
-        pos.add(vel);
-        acc.scl(0f);
-    }
-
-    public void drawDebugLine(Batch batch, Vector2 mousePosition){
-        if (Constants.DEBUG) {
-            drawLine(batch, pos, mousePosition, Color.BLUE);
-            drawLine(batch, new Vector2(10, 0), new Vector2(10, mousePosition.cpy().sub(pos).len() * 10), Color.WHITE);
-            drawLine(batch, new Vector2(20, 0), new Vector2(20, acc.len() * 10), Color.WHITE);
-            drawLine(batch, new Vector2(30, 0), new Vector2(30, vel.len() * 10), Color.WHITE);
-            // System.out.println(mouse_dst.len() + " : " + acc.len() + " : " + vel.len());
-        }
-    }
-
-    @Override
-    public abstract void draw(Batch batch, float parentAlpha);
-
 }
